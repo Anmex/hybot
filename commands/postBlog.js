@@ -17,6 +17,8 @@ async function postBlog(message) {
     // Reverse the articles array to post the most recent last
     articles.reverse();
 
+    let newPostFound = false;
+
     for (const article of articles) {
       const articleUrl = `https://hytale.com/news/${article["publishedAt"]
         .slice(0, 7)
@@ -24,6 +26,8 @@ async function postBlog(message) {
 
       // Check if the article has already been posted
       if (postedBlogs.includes(articleUrl)) continue;
+
+      newPostFound = true;
 
       const embed = new EmbedBuilder()
         .setColor(0xfcbb02)
@@ -51,6 +55,10 @@ async function postBlog(message) {
         "postedBlogs.json",
         JSON.stringify(postedBlogs, null, 2)
       );
+    }
+
+    if (!newPostFound) {
+      await message.channel.send("Aucun nouveau post n'a été trouvé.");
     }
   } catch (error) {
     console.error("Error fetching or processing blog post:", error);
